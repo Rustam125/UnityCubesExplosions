@@ -1,0 +1,12 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!CubesExplosions/Assets/Scripts/*
+
+# ...even if they are in subdirectories
+!*/
+
+# Ignore scripts meta
+*.meta
