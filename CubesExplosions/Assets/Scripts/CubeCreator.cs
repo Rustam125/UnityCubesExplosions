@@ -1,28 +1,35 @@
+using System.Collections.Generic;
+using JetBrains.Annotations;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class CubeCreator : MonoBehaviour
 {
-    [SerializeField] private Cube _cube;
-    
-    private void Awake()
+    [CanBeNull]
+    public static List<Cube> Spawn(Cube cube)
     {
-        _cube.Split += OnCubeSplit;
-    }
+        var cubes = new List<Cube>();
+        var countOfCubes = GetRandomCount();
+        
+        cube.Destroy();
 
-    private void OnCubeSplit(Cube cube)
-    {
-        for (var i = 0; i < GetRandomCount(); i++)
+        if (!cube.IsSplittable)
         {
-            Create(cube);
+            return null;
         }
+        
+        for (var i = 0; i < countOfCubes; i++)
+        {
+            cubes.Add(Create(cube));
+        }
+
+        return cubes;
     }
 
-    private void Create(Cube cube)
+    private static Cube Create(Cube currentCube)
     {
-        var newCube = Instantiate(cube);
-        newCube.Init(cube.SplitChance);
-        newCube.Split += OnCubeSplit;
+        var cube = Instantiate(currentCube);
+        cube.Init(currentCube.SplitChance);
+        return cube;
     }
     
     private static int GetRandomCount()

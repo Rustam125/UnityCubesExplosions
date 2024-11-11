@@ -1,37 +1,20 @@
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
+using JetBrains.Annotations;
 
-public class CubeExploser : MonoBehaviour
+public class CubeExploser
 {
-    [SerializeField] private float _explosionRadius;
-
-    [SerializeField] private float _explosionForce;
-
-    [SerializeField] private Cube _cube;
+    private const float ExplosionForce = 700f;
     
-    [SerializeField] private ParticleSystem _effect;
-
-    private void Awake()
+    public static void Explode([CanBeNull] List<Cube> cubes)
     {
-        _cube.Destroyed += Explode;
-    }
-
-    private void Explode()
-    {
-        Instantiate(_effect, transform.position, transform.rotation);
-
-        foreach(var explodableObjects in GetExplodableObjects())
+        if (cubes is null)
         {
-            explodableObjects.AddExplosionForce(_explosionForce, transform.position, _explosionRadius);
+            return;    
         }
-    }
-
-    private List<Rigidbody> GetExplodableObjects()
-    {
-        var hits = Physics.OverlapSphere(transform.position, _explosionRadius);
-
-        return (from hit in hits where hit.attachedRigidbody != null select hit.attachedRigidbody)
-            .ToList();
+        
+        foreach (var cube in cubes)
+        {
+            cube.Rigidbody.AddForce(-cube.Rigidbody.velocity * ExplosionForce);
+        }
     }
 }

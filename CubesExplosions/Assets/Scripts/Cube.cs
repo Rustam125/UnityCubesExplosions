@@ -1,15 +1,12 @@
-using System;
 using UnityEngine;
-using UnityEngine.Events;
 using Random = UnityEngine.Random;
 
 [RequireComponent(typeof(Rigidbody), typeof(MeshRenderer))]
 public class Cube : MonoBehaviour
 {
     public float SplitChance { get; private set; } = 100f;
-
-    public event UnityAction<Cube> Split;
-    public event Action Destroyed;
+    public bool IsSplittable => CheckSplittable();
+    public Rigidbody Rigidbody { get; private set; }
     
     public void Init(float splitChance)
     {
@@ -17,28 +14,18 @@ public class Cube : MonoBehaviour
 
         SplitChance = splitChance;
         transform.localScale /= scaleReduction;
+        ReduceSplitChance();
+    }
+    
+    public void Destroy()
+    {
+        Destroy(gameObject);
     }
     
     private void Awake()
     {
+        Rigidbody = GetComponent<Rigidbody>();
         GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
-    }
-    
-    private void OnMouseDown()
-    {
-        if (IsSplittable())
-        {
-            ReduceSplitChance();
-            Split?.Invoke(this);
-        }
-        
-        Destroy();
-        Destroyed?.Invoke();
-    }
-
-    private void Destroy()
-    {
-        Destroy(gameObject);
     }
     
     private void ReduceSplitChance()
@@ -48,7 +35,7 @@ public class Cube : MonoBehaviour
         SplitChance /= splitChanceReduction;
     }
 
-    private bool IsSplittable()
+    private bool CheckSplittable()
     {
         const int minPercent = 0;
         const int maxPercent = 100;
