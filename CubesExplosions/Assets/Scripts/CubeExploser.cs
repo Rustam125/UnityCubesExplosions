@@ -1,20 +1,30 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
+using System.Linq;
+using UnityEngine;
 
 public class CubeExploser
 {
-    private const float ExplosionForce = 700f;
+    private const float ExplosionForce = 900f;
+    private const float ExplosionRadius = 50f;
     
-    public static void Explode([CanBeNull] List<Cube> cubes)
+    public static void Explode(Cube cube)
     {
-        if (cubes is null)
+        var explosivePoint = cube.transform.position;
+        var cubeSize = cube.transform.localScale.magnitude;
+
+        var explosionRadius = ExplosionRadius / cubeSize;
+        var explosionForce = ExplosionForce / cubeSize;
+
+        foreach (var explodableObject in GetExplodableObjects(explosivePoint, explosionRadius))
         {
-            return;    
+            explodableObject.AddExplosionForce(explosionForce, explosivePoint, explosionRadius);
         }
-        
-        foreach (var cube in cubes)
-        {
-            cube.Rigidbody.AddForce(-cube.Rigidbody.velocity * ExplosionForce);
-        }
+    }
+    
+    private static IEnumerable<Rigidbody> GetExplodableObjects(Vector3 explosivePoint, float explosionRadius)
+    {
+        var hits = Physics.OverlapSphere(explosivePoint, explosionRadius);
+
+        return (from hit in hits where hit.attachedRigidbody != null select hit.attachedRigidbody).ToList();
     }
 }

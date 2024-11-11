@@ -1,35 +1,29 @@
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CubeCreator : MonoBehaviour
 {
-    [CanBeNull]
-    public static List<Cube> Spawn(Cube cube)
+    public static void Spawn(Cube cube)
     {
-        var cubes = new List<Cube>();
         var countOfCubes = GetRandomCount();
         
         cube.Destroy();
 
         if (!cube.IsSplittable)
         {
-            return null;
+            return;
         }
         
         for (var i = 0; i < countOfCubes; i++)
         {
-            cubes.Add(Create(cube));
+            Create(cube);
         }
-
-        return cubes;
     }
 
-    private static Cube Create(Cube currentCube)
+    private static void Create(Cube currentCube)
     {
         var cube = Instantiate(currentCube);
         cube.Init(currentCube.SplitChance);
-        return cube;
     }
     
     private static int GetRandomCount()

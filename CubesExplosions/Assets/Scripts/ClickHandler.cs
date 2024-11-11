@@ -24,7 +24,7 @@ public class ClickHandler : MonoBehaviour
             return;
         }
 
-        var cubes = CubeCreator.Spawn(cube);
-        CubeExploser.Explode(cubes);
+        CubeCreator.Spawn(cube);
+        CubeExploser.Explode(cube);
     }
 }
