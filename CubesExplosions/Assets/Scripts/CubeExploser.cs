@@ -4,13 +4,25 @@ using UnityEngine;
 
 public class CubeExploser
 {
-    private const float ExplosionForce = 900f;
-    private const float ExplosionRadius = 50f;
+    private const float ExplosionForce = 1000f;
+    private const float ExplosionRadius = 60f;
     
-    public static void Explode(Cube cube)
+    private readonly Cube _cube;
+    
+    public CubeExploser(Cube cube)
     {
-        var explosivePoint = cube.transform.position;
-        var cubeSize = cube.transform.localScale.magnitude;
+        _cube = cube;
+    }
+    
+    public void Explode()
+    {
+        if (_cube.IsSplittable)
+        {
+            return;
+        }
+        
+        var explosivePoint = _cube.transform.position;
+        var cubeSize = _cube.transform.localScale.magnitude;
 
         var explosionRadius = ExplosionRadius / cubeSize;
         var explosionForce = ExplosionForce / cubeSize;

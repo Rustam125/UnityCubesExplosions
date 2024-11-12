@@ -1,8 +1,19 @@
+using JetBrains.Annotations;
 using UnityEngine;
 
 public class ClickHandler : MonoBehaviour
 {
     [SerializeField] private Camera _camera;
+
+    private const int LeftMouseButton = 0;
+    
+    [CanBeNull] private CubeCreator _cubeCreator;
+
+    private void Awake()
+    {
+        var cubeCreatorObject = GameObject.Find("CubeCreator");
+        _cubeCreator = cubeCreatorObject?.GetComponent<CubeCreator>();
+    }
 
     private void Update()
     {
@@ -11,7 +22,7 @@ public class ClickHandler : MonoBehaviour
 
     private void ClickOnCubeHandle()
     {
-        if (!Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(LeftMouseButton) == false)
         {
             return;
         }
@@ -23,8 +34,13 @@ public class ClickHandler : MonoBehaviour
         {
             return;
         }
+        
+        var cubeExploser = new CubeExploser(cube);
+        cubeExploser.Explode();
 
-        CubeCreator.Spawn(cube);
-        CubeExploser.Explode(cube);
+        if (_cubeCreator)
+        {
+            _cubeCreator.Spawn(cube);
+        }
     }
 }

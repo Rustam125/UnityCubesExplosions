@@ -3,13 +3,13 @@ using Random = UnityEngine.Random;
 
 public class CubeCreator : MonoBehaviour
 {
-    public static void Spawn(Cube cube)
+    public void Spawn(Cube cube)
     {
         var countOfCubes = GetRandomCount();
         
         cube.Destroy();
 
-        if (!cube.IsSplittable)
+        if (cube.IsSplittable == false)
         {
             return;
         }
@@ -20,17 +20,17 @@ public class CubeCreator : MonoBehaviour
         }
     }
 
-    private static void Create(Cube currentCube)
+    private void Create(Cube currentCube)
     {
         var cube = Instantiate(currentCube);
         cube.Init(currentCube.SplitChance);
     }
     
-    private static int GetRandomCount()
+    private int GetRandomCount()
     {
-        const int minCount = 2;
-        const int maxCount = 6;
+        const int MinCount = 2;
+        const int MaxCount = 6;
 
-        return Random.Range(minCount, maxCount + 1);
+        return Random.Range(MinCount, MaxCount + 1);
     }
 }

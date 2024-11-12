@@ -5,16 +5,16 @@ using Random = UnityEngine.Random;
 public class Cube : MonoBehaviour
 {
     public float SplitChance { get; private set; } = 100f;
-    public bool IsSplittable => CheckSplittable();
-    public Rigidbody Rigidbody { get; private set; }
+    public bool IsSplittable { get; private set; } = true;
     
     public void Init(float splitChance)
     {
-        const int scaleReduction = 2;
+        const int ScaleReduction = 2;
 
         SplitChance = splitChance;
-        transform.localScale /= scaleReduction;
+        transform.localScale /= ScaleReduction;
         ReduceSplitChance();
+        IsSplittable = IsSplit();
     }
     
     public void Destroy()
@@ -24,22 +24,21 @@ public class Cube : MonoBehaviour
     
     private void Awake()
     {
-        Rigidbody = GetComponent<Rigidbody>();
         GetComponent<MeshRenderer>().material.color = Random.ColorHSV();
     }
     
     private void ReduceSplitChance()
     {
-        const int splitChanceReduction = 2;
+        const int SplitChanceReduction = 2;
 
-        SplitChance /= splitChanceReduction;
+        SplitChance /= SplitChanceReduction;
     }
 
-    private bool CheckSplittable()
+    private bool IsSplit()
     {
-        const int minPercent = 0;
-        const int maxPercent = 100;
+        const int MinPercent = 0;
+        const int MaxPercent = 100;
         
-        return Random.Range(minPercent, maxPercent) < SplitChance;
+        return Random.Range(MinPercent, MaxPercent) < SplitChance;
     }
 }
